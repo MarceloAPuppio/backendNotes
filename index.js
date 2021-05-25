@@ -10,6 +10,8 @@ require("dotenv").config();
 const { conectar, desconectar } = require("./db/mongo");
 //importamos el Schema Note
 const { Note } = require("./db/Schemas/Note");
+//importamos middlewares 🍾
+const { E_404, E_400_500 } = require("./middlewares/middlewares");
 // declaramos el puerto, que viene de variable de entorno, o por defecto 3001
 const PORT = process.env.PORT || 3001;
 //primeros middelware
@@ -54,6 +56,7 @@ app.get("/notes/:id", (req, res, next) => {
 
 app.post("/notes", (req, res) => {
   const { title, description } = req.body;
+  console.log(req.body);
   if (title && description) {
     const note = new Note({
       title,
@@ -95,17 +98,5 @@ app.delete("/notes/:id", (req, res, next) => {
     .finally(desconectar);
 });
 //éste middleware es para catchear errores
-app.use((err, req, res, next) => {
-  switch (err.name) {
-    case "CastError":
-      res.status(400).send({ errorName: err.name, errorMessage: err.message });
-      break;
-    case "Error":
-      res.status(400).send({ errorName: err.name, errorMessage: err.message });
-    default:
-      res.status(500).end();
-  }
-});
-app.use((req, res) => {
-  res.status(404).send({ message: "página no encontrada" });
-});
+app.use(E_400_500);
+app.use(E_404);
