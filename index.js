@@ -82,15 +82,28 @@ app.put("/notes/:id", (req, res, next) => {
     .finally(desconectar);
 });
 
+app.delete("/notes/:id", (req, res, next) => {
+  let id = req.params.id;
+  Note.findOneAndRemove({ _id: id })
+    .then((document) => {
+      if (document === null) {
+        throw new Error("documento no existe en bbdd");
+      }
+      res.status(200).send({ message: "documento eliminado" });
+    })
+    .catch((err) => next(err))
+    .finally(desconectar);
+});
 //éste middleware es para catchear errores
 app.use((err, req, res, next) => {
   switch (err.name) {
     case "CastError":
-      res.status(400).end();
+      res.status(400).send({ errorName: err.name, errorMessage: err.message });
       break;
+    case "Error":
+      res.status(400).send({ errorName: err.name, errorMessage: err.message });
     default:
       res.status(500).end();
-      console.log(err.name);
   }
 });
 app.use((req, res) => {
