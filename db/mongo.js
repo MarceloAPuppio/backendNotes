@@ -23,13 +23,5 @@ const desconectar = () => {
   mongoose.connection.close();
   console.log("BBDD desconectada");
 };
-//Tecero: podemos hacer instancias del modelo:
-
-// const note = new Note({
-//   title: "Mi segunda nota",
-//   description: "Si no se guarda me muero",
-//   fecha: new Date(),
-//   pinned: false,
-// });
 
 module.exports = { conectar, desconectar };
