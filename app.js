@@ -9,6 +9,8 @@ const noteCtrl = require("./controller/notes");
 
 //inicializamos express
 const app = express();
+// traemos la ruta
+const notes = require("./routes");
 app.use(cors());
 app.use(express.json());
 //Este middleware inicia la conexion con cada peticion, ya que cada consulta la cierra 🙋
@@ -19,13 +21,7 @@ app.use((req, res, next) => {
 
 //endpoints
 app.get("/", noteCtrl.getHome);
-app.get("/notes", noteCtrl.getAll);
-app.get("/notes/:id", noteCtrl.getById);
-
-app.post("/notes", noteCtrl.post);
-app.put("/notes/:id", noteCtrl.update);
-
-app.delete("/notes/:id", noteCtrl.remove);
+app.use("/notes", notes);
 //éste middleware es para catchear errores
 app.use(noteCtrl.error);
 app.use(noteCtrl.notFound);
